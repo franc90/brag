@@ -33,4 +33,4 @@ class CmdLineArguments:
         if self.__args.command:
             notes.exec(self.__args)
         else:
-            self.__parser.print_help()
+            self.print_help()
