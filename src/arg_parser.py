@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 
 
 def create_argument_parser() -> ArgumentParser:
-    parser = ArgumentParser(description="Brag about work you've done today.")
+    parser = ArgumentParser(prog="brag", description="Brag about work you've done today.")
     subparsers = parser.add_subparsers(dest='command')
 
     new_note_parser = subparsers.add_parser('new')
