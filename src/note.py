@@ -35,11 +35,11 @@ class Note:
         matching_notes = [
             note_file.name
             for note_file in DataStore.iter_notes()
-            if not args.name or args.name in note_file.name
+            if not args.text or args.text in note_file.name
         ]
 
         if len(matching_notes) == 0:
-            print(f"No note contains '{args.name}' in its name. :(")
+            print(f"No note contains '{args.text}' in its name. :(")
             sys.exit(1)
         elif len(matching_notes) > 1:
             fzf = FzfPrompt()

@@ -6,7 +6,7 @@ def new_note_parser(parser):
 
 
 def show_note_parser(parser):
-    parser.add_argument('name', nargs='?', help="note name must include this string")
+    parser.add_argument('text', nargs='?', help="note name must contain this text")
 
 
 def create_argument_parser() -> ArgumentParser:
