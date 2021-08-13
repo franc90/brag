@@ -5,8 +5,8 @@ from common import setup
 from note import Note
 
 COMMANDS = {
-    'new': Note.create,
-    'show': Note.show,
+    'n': Note.create,
+    's': Note.show,
 }
 
 setup()
