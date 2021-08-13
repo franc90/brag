@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source /home/alex/workspace/brag/venv/bin/activate
+
+python /home/alex/workspace/brag/src/brag.py $*
