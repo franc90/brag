@@ -7,7 +7,29 @@ from pyfzf import FzfPrompt
 from datastore import DataStore
 
 
-class Note:
+class Notes:
+
+    def __init__(self):
+        self.data_store = DataStore()
+        self.__commands = {
+            'n': self.create,
+            's': self.show,
+        }
+
+    def exec(self, args: Namespace):
+        self.__commands[args.command](args)
+
+    def create(self, args: Namespace):
+        file_name = self.__get_work_date().strftime('%Y%m%d')
+        if args.name:
+            file_name = f'{file_name}_{"-".join(args.name)}'
+
+        if self.data_store.note_exists(file_name):
+            sys.stdout.write(f'Note "{file_name}" already exist. Open? [y/n] ')
+            choice = input().lower()
+            if choice not in ['', 'y', 'ye', 'yes']:
+                sys.exit(0)
+        self.data_store.edit_note(file_name)
 
     @staticmethod
     def __get_work_date():
@@ -17,24 +39,10 @@ class Note:
         else:
             return today
 
-    @staticmethod
-    def create(args: Namespace):
-        file_name = Note.__get_work_date().strftime('%Y%m%d')
-        if args.name:
-            file_name = f'{file_name}_{"-".join(args.name)}'
-
-        if DataStore.note_exists(file_name):
-            sys.stdout.write(f'Note "{file_name}" already exist. Open? [y/n] ')
-            choice = input().lower()
-            if choice not in ['', 'y', 'ye', 'yes']:
-                sys.exit(0)
-        DataStore.edit_note(file_name)
-
-    @staticmethod
-    def show(args: Namespace):
+    def show(self, args: Namespace):
         matching_notes = [
             note_file.name
-            for note_file in DataStore.iter_notes()
+            for note_file in self.data_store.iter_notes()
             if not args.text or args.text in note_file.name
         ]
 
@@ -53,4 +61,4 @@ class Note:
         else:
             note = matching_notes[0]
 
-        DataStore.edit_note(note)
+        self.data_store.edit_note(note)
