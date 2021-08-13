@@ -1,5 +1,7 @@
 #!/bin/bash
 
-source /home/alex/workspace/brag/venv/bin/activate
+readonly SCRIPT_LOCATION="$(dirname "$(readlink -f "$(which brag)")")"
 
-python /home/alex/workspace/brag/src/brag.py $*
+source "$SCRIPT_LOCATION/venv/bin/activate"
+
+python "$SCRIPT_LOCATION/src/brag.py" $*
