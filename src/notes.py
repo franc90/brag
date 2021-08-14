@@ -46,11 +46,10 @@ class Notes:
             print(f"No note contains '{args.text}' in its name. :(")
             sys.exit(1)
         elif len(matching_notes) > 1:
-            fzf = FzfPrompt()
             try:
                 matching_notes.sort(reverse=True)
-                choosen = fzf.prompt(choices=matching_notes)
-                note = choosen[0]
+                chosen = FzfPrompt().prompt(choices=matching_notes)
+                note = chosen[0]
             except:
                 print(f"WARN: Terminating because no note was selected.")
                 sys.exit(1)
