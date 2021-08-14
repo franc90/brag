@@ -12,6 +12,9 @@ class Notes:
     def __init__(self):
         self.data_store = DataStore()
 
+    def open_store(self, _: Namespace):
+        self.data_store.open_store()
+
     def create(self, args: Namespace):
         file_name = self.__get_work_date().strftime('%Y%m%d')
         if args.name:

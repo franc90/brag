@@ -12,6 +12,7 @@ class Brag:
         self.__commands = {
             'n': self.__notes.create,
             's': self.__notes.show,
+            'o': self.__notes.open_store,
         }
 
     @staticmethod
@@ -26,8 +27,9 @@ class Brag:
         parser = ArgumentParser(prog="brag", description="Brag about work you've done today.")
         subparsers = parser.add_subparsers(dest='command')
 
-        self.__new_note_parser(subparsers.add_parser('n', help='new note'))
-        self.__show_note_parser(subparsers.add_parser('s', help='show note'))
+        self.__new_note_parser(subparsers.add_parser('n', help='create a new note'))
+        self.__show_note_parser(subparsers.add_parser('s', help='show previously created note'))
+        subparsers.add_parser('o', help='open directory where data is stored')
 
         return parser
 
