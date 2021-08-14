@@ -26,5 +26,9 @@ class DataStore:
         file = self.store / filename
         subprocess.call([self.__editor, file])
 
+    def load_note(self, filename: str) -> str:
+        file = self.store / filename
+        return file.read_text()
+
     def open_store(self):
         subprocess.call([self.__open, self.store])
