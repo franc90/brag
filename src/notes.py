@@ -61,7 +61,9 @@ class Notes:
         matching_notes = [
             note_file.name
             for note_file in self.data_store.iter_notes()
-            if not args.text or args.text in note_file.name
+            if (not args.text or args.text in note_file.name) and
+               (not args.since or note_file.name >= args.since) and
+               (not args.to or note_file.name < args.to)
         ]
         matching_notes.sort()
 
