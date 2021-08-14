@@ -23,10 +23,7 @@ class Notes:
             file_name = f'{file_name}_{"-".join(args.name)}'
 
         if self.data_store.note_exists(file_name):
-            sys.stdout.write(f'Note "{file_name}" already exist. Open? [y/n] ')
-            choice = input().lower()
-            if choice not in ['', 'y', 'ye', 'yes']:
-                sys.exit(0)
+            self.__confirm_or_exit(f'Note "{file_name}" already exist. Open? [y/n] ')
         self.data_store.edit_note(file_name)
 
     @staticmethod
@@ -74,7 +71,10 @@ class Notes:
 
         notes = self.combine_notes(matching_notes)
         if args.output:
-            with Path(args.output).open(mode='w') as f:
+            out_file = Path(args.output)
+            if out_file.exists():
+                self.__confirm_or_exit(f'File "{args.output}" already exist. Override? [y/n] ')
+            with out_file.open(mode='w') as f:
                 for note in notes:
                     f.write(note)
         else:
@@ -87,3 +87,10 @@ class Notes:
             if len(note) == 0:
                 continue
             yield f"###### {file_name}:\n{note}\n\n"
+
+    @staticmethod
+    def __confirm_or_exit(msg: str):
+        sys.stdout.write(msg)
+        choice = input().lower()
+        if choice not in ['', 'y', 'ye', 'yes']:
+            sys.exit(0)
