@@ -39,7 +39,7 @@ class Brag:
         self.__show_note_parser(subparsers.add_parser('list', aliases=['l'], help='list specific note content'))
         self.__combine_notes_parser(
             subparsers.add_parser('combine', aliases=['c'], help='combine notes into one big note'))
-        subparsers.add_parser('data_dir', aliases=['dd'], help='open directory where data is stored')
+        subparsers.add_parser('data_dir', aliases=['dd'], help='open directory where notes are stored')
 
         return parser
 
