@@ -11,13 +11,6 @@ class Notes:
 
     def __init__(self):
         self.data_store = DataStore()
-        self.__commands = {
-            'n': self.create,
-            's': self.show,
-        }
-
-    def exec(self, args: Namespace):
-        self.__commands[args.command](args)
 
     def create(self, args: Namespace):
         file_name = self.__get_work_date().strftime('%Y%m%d')
