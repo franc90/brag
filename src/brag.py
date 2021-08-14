@@ -27,7 +27,7 @@ class Brag:
     @staticmethod
     def __combine_notes_parser(parser):
         parser.add_argument('text', nargs='?', help='note name must contain this text')
-        parser.add_argument('-o', dest='output', help='output file')
+        parser.add_argument('-o', '--output', dest='output', help='output file')
 
     def __create_argument_parser(self) -> ArgumentParser:
         parser = ArgumentParser(prog='brag', description="Brag about work you've done today.")
