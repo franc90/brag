@@ -72,9 +72,14 @@ class Notes:
             print(f"No note selected")
             sys.exit(0)
 
-        with Path(args.output).open(mode='w') as f:
-            for note in self.combine_notes(matching_notes):
-                f.write(note)
+        notes = self.combine_notes(matching_notes)
+        if args.output:
+            with Path(args.output).open(mode='w') as f:
+                for note in notes:
+                    f.write(note)
+        else:
+            for note in notes:
+                print(note)
 
     def combine_notes(self, matching_notes) -> Iterator[str]:
         for file_name in matching_notes:

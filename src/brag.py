@@ -10,14 +10,10 @@ class Brag:
         self.__parser = self.__create_argument_parser()
         self.__args = self.__parser.parse_args()
         self.__commands = {
-            'new': self.__notes.create,
-            'n': self.__notes.create,
-            'list': self.__notes.show,
-            'l': self.__notes.show,
-            'combine': self.__notes.combine,
-            'c': self.__notes.combine,
-            'data_dir': self.__notes.open_store,
-            'dd': self.__notes.open_store,
+            'new': self.__notes.create, 'n': self.__notes.create,
+            'list': self.__notes.show, 'l': self.__notes.show,
+            'combine': self.__notes.combine, 'c': self.__notes.combine,
+            'data_dir': self.__notes.open_store, 'dd': self.__notes.open_store,
         }
 
     @staticmethod
@@ -31,7 +27,7 @@ class Brag:
     @staticmethod
     def __combine_notes_parser(parser):
         parser.add_argument('text', nargs='?', help='note name must contain this text')
-        parser.add_argument('-o', dest='output', required=True, help='output file')
+        parser.add_argument('-o', dest='output', help='output file')
 
     def __create_argument_parser(self) -> ArgumentParser:
         parser = ArgumentParser(prog='brag', description="Brag about work you've done today.")
