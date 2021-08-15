@@ -8,4 +8,9 @@ setup(
     install_requires=[
         'pyfzf'
     ],
+    entry_points={
+        'console_scripts': [
+            'brag=brag.app:main',
+        ],
+    },
 )
