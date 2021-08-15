@@ -3,4 +3,4 @@
 readonly SCRIPT_LOCATION="$(dirname "$(readlink -f "$(which brag)")")"
 source "$SCRIPT_LOCATION/../venv/bin/activate"
 
-brag # runs locally installed brag/venv/bin/brag
+brag $* # runs locally installed brag/venv/bin/brag
