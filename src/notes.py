@@ -18,7 +18,7 @@ class Notes:
         self.data_store.open_store()
 
     def create(self, args: Namespace):
-        file_name = self.__get_work_date().strftime('%Y%m%d')
+        file_name = self.__date_to_string(self.__get_work_date())
         if args.name:
             file_name = f'{file_name}_{"-".join(args.name)}'
 
@@ -27,63 +27,74 @@ class Notes:
         self.data_store.edit_note(file_name)
 
     @staticmethod
-    def __get_work_date():
+    def __get_work_date() -> datetime:
         today = datetime.today()
         if today.time().hour < 6:  # is still yesterday by work standards (before 6am)
             return today - timedelta(days=1)
         else:
             return today
 
-    def show(self, args: Namespace):
-        matching_notes = [
-            note_file.name
-            for note_file in self.data_store.iter_notes()
-            if not args.text or args.text in note_file.name
-        ]
+    def list(self, args: Namespace):
+        matching_notes = self.__find_matching_notes(args)
 
         if len(matching_notes) == 0:
-            print(f"No note contains '{args.text}' in its name. :(")
+            print(f"No matching note found. :(")
             sys.exit(1)
-        elif len(matching_notes) > 1:
+        elif args.combine:
+            matching_notes.sort()  # show oldest first
+            notes = self.__combine_notes(matching_notes)
+            if args.output:
+                out_file = Path(args.output)
+                if out_file.exists():
+                    self.__confirm_or_exit(f'File "{args.output}" already exist. Override? [y/n] ')
+                with out_file.open(mode='w') as f:
+                    for note in notes:
+                        f.write(note)
+            else:
+                for note in notes:
+                    print(note)
+        elif len(matching_notes) == 1:
+            self.data_store.edit_note(matching_notes[0])
+        else:
             try:
-                matching_notes.sort(reverse=True)
+                matching_notes.sort(reverse=True)  # show youngest first
                 chosen = FzfPrompt().prompt(choices=matching_notes)
-                note = chosen[0]
+                self.data_store.edit_note(chosen[0])
             except:
                 print(f"WARN: Terminating because no note was selected.")
                 sys.exit(1)
+
+    def __find_matching_notes(self, args: Namespace):
+        if args.yesterday:
+            since = self.__date_to_string(datetime.today() - timedelta(days=1))
+        elif args.since:
+            since = args.since
         else:
-            note = matching_notes[0]
+            since = None
 
-        self.data_store.edit_note(note)
+        if args.yesterday:
+            to = f'{self.__date_to_string((datetime.today() - timedelta(days=1)))}Z'
+        elif args.to:
+            to = f'{args.to}Z'
+        else:
+            to = None
 
-    def combine(self, args: Namespace):
-        matching_notes = [
+        return [
             note_file.name
             for note_file in self.data_store.iter_notes()
-            if (not args.text or args.text in note_file.name) and
-               (not args.since or note_file.name >= args.since) and
-               (not args.to or note_file.name < args.to)
+            if (self.__note_name_contains_all_texts(args, note_file)) and
+               (not since or note_file.name >= since) and
+               (not to or note_file.name <= to)
         ]
-        matching_notes.sort()
 
-        if len(matching_notes) == 0:
-            print(f"No note selected")
-            sys.exit(0)
+    @staticmethod
+    def __note_name_contains_all_texts(args: Namespace, note_file: Path) -> bool:
+        for text in args.texts:
+            if text not in note_file.name:
+                return False
+        return True
 
-        notes = self.combine_notes(matching_notes)
-        if args.output:
-            out_file = Path(args.output)
-            if out_file.exists():
-                self.__confirm_or_exit(f'File "{args.output}" already exist. Override? [y/n] ')
-            with out_file.open(mode='w') as f:
-                for note in notes:
-                    f.write(note)
-        else:
-            for note in notes:
-                print(note)
-
-    def combine_notes(self, matching_notes) -> Iterator[str]:
+    def __combine_notes(self, matching_notes) -> Iterator[str]:
         for file_name in matching_notes:
             note = self.data_store.load_note(file_name).strip()
             if len(note) == 0:
@@ -96,3 +107,7 @@ class Notes:
         choice = input().lower()
         if choice not in ['', 'y', 'ye', 'yes']:
             sys.exit(0)
+
+    @staticmethod
+    def __date_to_string(date: datetime) -> str:
+        return date.strftime('%Y%m%d')

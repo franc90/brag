@@ -11,8 +11,7 @@ class Brag:
         self.__args = self.__parser.parse_args()
         self.__commands = {
             'new': self.__notes.create, 'n': self.__notes.create,
-            'list': self.__notes.show, 'l': self.__notes.show,
-            'combine': self.__notes.combine, 'c': self.__notes.combine,
+            'list': self.__notes.list, 'l': self.__notes.list,
             'data_dir': self.__notes.open_store, 'dd': self.__notes.open_store,
         }
 
@@ -21,24 +20,22 @@ class Brag:
         parser.add_argument('name', nargs='*', help='note name')
 
     @staticmethod
-    def __show_note_parser(parser):
-        parser.add_argument('text', nargs='?', help='note name must contain this text')
-
-    @staticmethod
-    def __combine_notes_parser(parser):
-        parser.add_argument('text', nargs='?', help='note name must contain this text')
-        parser.add_argument('-o', '--output', dest='output', help='output file')
+    def __list_notes_parser(parser):
+        parser.add_argument('texts', nargs='*', help='note name must contain these texts')
+        parser.add_argument('-c', '--combine', dest='combine', action='store_true',
+                            help='combine selected notes into a single file')
+        parser.add_argument('-y', '--yesterday', dest='yesterday', action='store_true',
+                            help='show only yesterday notes')
         parser.add_argument('-s', '--since', dest='since', help='date (YYYYMMDD) since when to combine notes')
         parser.add_argument('-t', '--to', dest='to', help='date (YYYYMMDD) till when to combine notes')
+        parser.add_argument('-o', '--output', dest='output', help='output file')
 
     def __create_argument_parser(self) -> ArgumentParser:
         parser = ArgumentParser(prog='brag', description="Brag about work you've done today.")
         subparsers = parser.add_subparsers(dest='command')
 
         self.__new_note_parser(subparsers.add_parser('new', aliases=['n'], help='create a new note'))
-        self.__show_note_parser(subparsers.add_parser('list', aliases=['l'], help='list specific note content'))
-        self.__combine_notes_parser(
-            subparsers.add_parser('combine', aliases=['c'], help='combine notes into one big note'))
+        self.__list_notes_parser(subparsers.add_parser('list', aliases=['l'], help='list selected notes content'))
         subparsers.add_parser('data_dir', aliases=['dd'], help='open directory where notes are stored')
 
         return parser
