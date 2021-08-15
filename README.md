@@ -22,4 +22,4 @@ Requirements:
 * python 3.x
 * fzf on path  
 
-To install run `./install.sh`. Or if you want to install globally, then in `brag` directory run `pip3 install .`
+To install run `./install.sh`. Or if you want to install globally, then in project root folder run `pip3 install .`.
