@@ -45,7 +45,3 @@ class Brag:
             self.__commands[self.__args.command](self.__args)
         else:
             self.__parser.print_help()
-
-
-if __name__ == '__main__':
-    Brag().run()
