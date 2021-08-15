@@ -6,12 +6,13 @@ from brag.notes import Notes
 class Brag:
 
     def __init__(self):
-        self.__notes = Notes()
         self.__parser = self.__create_argument_parser()
         self.__args = self.__parser.parse_args()
+        self.__notes = Notes(self.__args)
         self.__commands = {
             'new': self.__notes.create, 'n': self.__notes.create,
             'list': self.__notes.list, 'l': self.__notes.list,
+            'edit': self.__notes.edit, 'e': self.__notes.edit,
             'data_dir': self.__notes.open_store, 'dd': self.__notes.open_store,
         }
 
@@ -35,13 +36,14 @@ class Brag:
         subparsers = parser.add_subparsers(dest='command')
 
         self.__new_note_parser(subparsers.add_parser('new', aliases=['n'], help='create a new note'))
-        self.__list_notes_parser(subparsers.add_parser('list', aliases=['l'], help='list selected notes content'))
+        self.__list_notes_parser(subparsers.add_parser('list', aliases=['l'], help='list selected note(s) content'))
+        self.__list_notes_parser(subparsers.add_parser('edit', aliases=['e'], help='edit selected note'))
         subparsers.add_parser('data_dir', aliases=['dd'], help='open directory where notes are stored')
 
         return parser
 
     def run(self):
         if self.__args.command:
-            self.__commands[self.__args.command](self.__args)
+            self.__commands[self.__args.command]()
         else:
             self.__parser.print_help()

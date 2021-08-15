@@ -1,7 +1,7 @@
 import os
 import subprocess
 from pathlib import Path
-from typing import Iterator
+from typing import Iterator, List
 
 from brag.store.filters import Filter
 
@@ -15,7 +15,7 @@ class FileDataStore:
         self.store = data_home / 'brag' / 'userdata'
         self.store.mkdir(parents=True, exist_ok=True)
 
-    def find_matching_note_names(self, filters: Iterator[Filter]):
+    def find_matching_note_names(self, filters: Iterator[Filter]) -> List[str]:
         return [
             note_name
             for note_name in self.__iter_note_names()
