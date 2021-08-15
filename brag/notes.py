@@ -6,19 +6,21 @@ from typing import Iterator
 
 from pyfzf import FzfPrompt
 
-from datastore import DataStore
+from brag.date import date_to_string
+from brag.store.filedatastore import FileDataStore
+from brag.store.filters import Filters
 
 
 class Notes:
 
     def __init__(self):
-        self.data_store = DataStore()
+        self.data_store = FileDataStore()
 
     def open_store(self, _: Namespace):
         self.data_store.open_store()
 
     def create(self, args: Namespace):
-        file_name = self.__date_to_string(self.__get_work_date())
+        file_name = date_to_string(self.__get_work_date())
         if args.name:
             file_name = f'{file_name}_{"-".join(args.name)}'
 
@@ -35,7 +37,8 @@ class Notes:
             return today
 
     def list(self, args: Namespace):
-        matching_notes = self.__find_matching_notes(args)
+        filters = Filters.create_filters(args)
+        matching_notes = self.data_store.find_matching_note_names(filters)
 
         if len(matching_notes) == 0:
             print(f"No matching note found. :(")
@@ -64,36 +67,6 @@ class Notes:
                 print(f"WARN: Terminating because no note was selected.")
                 sys.exit(1)
 
-    def __find_matching_notes(self, args: Namespace):
-        if args.yesterday:
-            since = self.__date_to_string(datetime.today() - timedelta(days=1))
-        elif args.since:
-            since = args.since
-        else:
-            since = None
-
-        if args.yesterday:
-            to = f'{self.__date_to_string((datetime.today() - timedelta(days=1)))}Z'
-        elif args.to:
-            to = f'{args.to}Z'
-        else:
-            to = None
-
-        return [
-            note_file.name
-            for note_file in self.data_store.iter_notes()
-            if (self.__note_name_contains_all_texts(args, note_file)) and
-               (not since or note_file.name >= since) and
-               (not to or note_file.name <= to)
-        ]
-
-    @staticmethod
-    def __note_name_contains_all_texts(args: Namespace, note_file: Path) -> bool:
-        for text in args.texts:
-            if text not in note_file.name:
-                return False
-        return True
-
     def __combine_notes(self, matching_notes) -> Iterator[str]:
         for file_name in matching_notes:
             note = self.data_store.load_note(file_name).strip()
@@ -107,7 +80,3 @@ class Notes:
         choice = input().lower()
         if choice not in ['', 'y', 'ye', 'yes']:
             sys.exit(0)
-
-    @staticmethod
-    def __date_to_string(date: datetime) -> str:
-        return date.strftime('%Y%m%d')

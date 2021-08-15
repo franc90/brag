@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from notes import Notes
+from brag.notes import Notes
 
 
 class Brag:

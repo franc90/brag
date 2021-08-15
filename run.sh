@@ -4,4 +4,4 @@ readonly SCRIPT_LOCATION="$(dirname "$(readlink -f "$(which brag)")")"
 
 source "$SCRIPT_LOCATION/venv/bin/activate"
 
-python "$SCRIPT_LOCATION/src/brag.py" $*
+python -m brag.brag $*
