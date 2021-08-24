@@ -43,9 +43,6 @@ class Notes:
         if len(matching_notes) == 0:
             print('No matching note found. :(')
             sys.exit(1)
-        elif self.args.combine:
-            notes = self.__combine_notes(matching_notes)
-            self.print_notes(notes)
         elif len(matching_notes) > 1:
             try:
                 matching_notes.sort(reverse=True)
@@ -59,8 +56,8 @@ class Notes:
                 print('WARN: Terminating because no note was selected.')
                 sys.exit(1)
         else:
-            note = self.data_store.load_note(matching_notes[0])
-            self.print_notes([note])
+            notes = self.__combine_notes(matching_notes)
+            self.print_notes(notes)
 
     def print_notes(self, notes: List[str]):
         if self.args.output:
