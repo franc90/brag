@@ -3,18 +3,7 @@ from argparse import ArgumentParser
 from brag.notes import Notes
 
 
-class Brag:
-
-    def __init__(self):
-        self.__parser = self.__create_argument_parser()
-        self.__args = self.__parser.parse_args()
-        self.__notes = Notes(self.__args)
-        self.__commands = {
-            'new': self.__notes.create, 'n': self.__notes.create,
-            'list': self.__notes.list, 'l': self.__notes.list,
-            'edit': self.__notes.edit, 'e': self.__notes.edit,
-            'data_dir': self.__notes.open_store, 'dd': self.__notes.open_store,
-        }
+class CmdLineArgParser:
 
     @staticmethod
     def __new_note_parser(parser):
@@ -31,7 +20,7 @@ class Brag:
         parser.add_argument('-t', '--to', dest='to', help='date (YYYYMMDD) till when to combine notes')
         parser.add_argument('-o', '--output', dest='output', help='output file')
 
-    def __create_argument_parser(self) -> ArgumentParser:
+    def create_argument_parser(self) -> ArgumentParser:
         parser = ArgumentParser(prog='brag', description="Brag about work you've done today.")
         subparsers = parser.add_subparsers(dest='command')
 
@@ -42,8 +31,3 @@ class Brag:
 
         return parser
 
-    def run(self):
-        if self.__args.command:
-            self.__commands[self.__args.command]()
-        else:
-            self.__parser.print_help()
