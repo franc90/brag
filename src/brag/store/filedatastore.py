@@ -10,7 +10,7 @@ class FileDataStore:
 
     def __init__(self):
         self.__open = os.getenv('BRAG_OPEN', 'xdg-open')
-        self.__editor = os.getenv('BRAG_EDITOR', 'subl')
+        self.__editor = os.getenv('BRAG_EDITOR', 'vim')
         data_home = Path(os.getenv('XDG_DATA_HOME', Path.home()))
         self.store = data_home / 'brag' / 'userdata'
         self.store.mkdir(parents=True, exist_ok=True)
