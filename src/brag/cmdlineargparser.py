@@ -14,8 +14,8 @@ class CmdLineArgParser:
         parser.add_argument('texts', nargs='*', help='note name must contain these texts')
         parser.add_argument('-y', '--yesterday', dest='yesterday', action='store_true',
                             help='show only yesterday notes')
-        parser.add_argument('-s', '--since', dest='since', help='date (YYYYMMDD) since when to combine notes')
-        parser.add_argument('-t', '--to', dest='to', help='date (YYYYMMDD) till when to combine notes')
+        parser.add_argument('-s', '--since', dest='since', help='date (YYYY-MM-DD) since when to combine notes')
+        parser.add_argument('-t', '--to', dest='to', help='date (YYYY-MM-DD) till when to combine notes')
         parser.add_argument('-o', '--output', dest='output', help='output file')
 
     def create_argument_parser(self) -> ArgumentParser:
