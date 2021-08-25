@@ -27,12 +27,13 @@ class CmdLineArgParser:
         edit_parser.add_argument('-o', '--output', dest='output', help='output file')
 
         search_parser = subparsers.add_parser('search', aliases=['s'], help='search notes with text')
-        search_parser.add_argument('grep_args', nargs='*', help='note must contain this pattern')
+        search_parser.add_argument('grep_args', nargs='*',
+                                   help="args for grep; if using grep options, delimit them with '', e.g. brag s -- -i text")
+        search_parser.add_argument('-v', '--invert-match', dest='invert_match', action="store_true",
+                                   help='select not matching files')
         search_parser.add_argument('-s', '--since', dest='since', help='date (YYYY-MM-DD) since when to combine notes')
         search_parser.add_argument('-t', '--to', dest='to', help='date (YYYY-MM-DD) till when to combine notes')
         search_parser.add_argument('-o', '--output', dest='output', help='output file')
-        search_parser.add_argument('-v', '--invert-match', dest='invert_match', action="store_true",
-                                   help='select not matching files')
 
         subparsers.add_parser('data_dir', aliases=['dd'], help='open directory where notes are stored')
 
