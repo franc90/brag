@@ -1,4 +1,4 @@
-from argparse import Namespace
+import subprocess
 from datetime import datetime, timedelta
 from typing import List
 
@@ -61,13 +61,27 @@ class NameFilter(Filter):
         return True
 
 
+class ContentFilter(Filter):
+    def __init__(self, patterns: List[str], invert_match: bool, data_store):
+        self.__patterns = patterns
+        self.__invert_match = invert_match
+        self.__data_store = data_store
+
+    @staticmethod
+    def create(patterns: List[str], invert_match: bool, data_store):
+        if patterns:
+            return ContentFilter(patterns, invert_match, data_store)
+        return None
+
+    def matches(self, name: str) -> bool:
+        args = ['grep', '-q'] + self.__patterns + [self.__data_store / name]
+        if subprocess.call(args) == 1:
+            return self.__invert_match  # True if filter out matching
+        return not self.__invert_match  # False if filter out matching
+
+
 class Filters:
 
     @staticmethod
-    def create_filters(args: Namespace) -> List[Filter]:
-        filters = [
-            NameFilter.create(args.texts),
-            SinceFilter.create(args.yesterday, args.since),
-            ToFilter.create(args.yesterday, args.to),
-        ]
+    def create_filters(*filters) -> List[Filter]:
         return list(filter(None, filters))
