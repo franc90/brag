@@ -12,6 +12,7 @@ def main():
         'new': notes.create, 'n': notes.create,
         'list': notes.list, 'l': notes.list,
         'edit': notes.edit, 'e': notes.edit,
+        'search': notes.search, 's': notes.search,
         'data_dir': notes.open_store, 'dd': notes.open_store,
     }.get(args.command, parser.print_help)
     cmd()

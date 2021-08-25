@@ -6,7 +6,7 @@ from typing import Iterator, List
 
 from brag.date import date_to_string
 from brag.store.filedatastore import FileDataStore
-from brag.store.filters import Filters
+from brag.store.filters import *
 from pyfzf import FzfPrompt
 
 
@@ -37,7 +37,12 @@ class Notes:
             return today
 
     def list(self):
-        filters = Filters.create_filters(self.args)
+        filters = Filters.create_filters(
+            NameFilter.create(self.args.texts),
+            SinceFilter.create(self.args.yesterday, self.args.since),
+            ToFilter.create(self.args.yesterday, self.args.to),
+        )
+        print(f"Filters! {filters}")
         matching_notes = self.data_store.find_matching_note_names(filters)
 
         if len(matching_notes) == 0:
@@ -80,7 +85,11 @@ class Notes:
             yield f'###### {file_name}:\n{note}\n\n'
 
     def edit(self):
-        filters = Filters.create_filters(self.args)
+        filters = Filters.create_filters(
+            NameFilter.create(self.args.texts),
+            SinceFilter.create(self.args.yesterday, self.args.since),
+            ToFilter.create(self.args.yesterday, self.args.to),
+        )
         matching_notes = self.data_store.find_matching_note_names(filters)
 
         if len(matching_notes) == 0:
@@ -96,6 +105,16 @@ class Notes:
             except:
                 print('WARN: Terminating because no note was selected.')
                 sys.exit(1)
+
+    def search(self):
+        filters = Filters.create_filters(
+            SinceFilter.create(yesterday=False, since=self.args.since),
+            ToFilter.create(yesterday=False, to=self.args.to),
+            ContentFilter.create(self.args.grep_args, self.args.invert_match, self.data_store.store)
+        )
+        filtered_notes = self.data_store.find_matching_note_names(filters)
+
+        self.print_notes(self.__combine_notes(filtered_notes))
 
     @staticmethod
     def __confirm_or_exit(msg: str):
