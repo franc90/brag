@@ -2,7 +2,7 @@ from argparse import Namespace
 from datetime import datetime, timedelta
 from typing import List
 
-from brag.date import date_to_string
+from brag.date import date_to_string, get_previous_work_day
 
 
 class Filter:
@@ -17,7 +17,7 @@ class SinceFilter(Filter):
     @staticmethod
     def create(yesterday: bool, since: str):
         if yesterday:
-            return SinceFilter(date_to_string(datetime.today() - timedelta(days=1)))
+            return SinceFilter(date_to_string(get_previous_work_day(datetime.today())))
         elif since:
             return SinceFilter(since)
         else:
