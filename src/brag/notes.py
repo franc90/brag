@@ -42,7 +42,6 @@ class Notes:
             SinceFilter.create(self.args.yesterday, self.args.since),
             ToFilter.create(self.args.yesterday, self.args.to),
         )
-        print(f"Filters! {filters}")
         matching_notes = self.data_store.find_matching_note_names(filters)
 
         if len(matching_notes) == 0:
