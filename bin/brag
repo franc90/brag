@@ -1,6 +1,11 @@
 #!/bin/bash
 
-readonly SCRIPT_LOCATION="$(dirname "$(readlink -f "$(which brag)")")"
+if [[ $OSTYPE == 'darwin'* ]]; then
+  readonly SCRIPT_LOCATION="$(dirname "$(readlink "$(which brag)")")"
+else
+  readonly SCRIPT_LOCATION="$(dirname "$(readlink -f "$(which brag)")")"
+fi
+
 source "$SCRIPT_LOCATION/../venv/bin/activate"
 
 brag $* # runs locally installed brag/venv/bin/brag
