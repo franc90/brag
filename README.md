@@ -21,6 +21,9 @@ optional arguments:
 
 Requirements:
 * python 3.x
-* fzf on path  
+ * fzf
+* grep
+* python3-venv (for dev)
 
-To install run `./install.sh`. Or if you want to install globally, then in project's root folder run `pip3 install .`.
+To install globally run `pip3 install .` in project's root folder.  
+Script `install.sh` can be used to install in a separate virtual env instead.
